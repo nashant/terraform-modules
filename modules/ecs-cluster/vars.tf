@@ -23,7 +23,7 @@ variable "vpc_subnets" {
 }
 
 variable "ecs_termination_policies" {
-  default = "oldestlaunchconfiguration,default"
+  default = ["oldestlaunchconfiguration", "default"]
 }
 
 variable "ecs_minsize" {

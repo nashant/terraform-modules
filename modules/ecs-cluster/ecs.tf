@@ -54,9 +54,9 @@ resource "aws_launch_configuration" "cluster" {
 #
 resource "aws_autoscaling_group" "cluster" {
   name                 = "ecs-${var.cluster_name}-autoscaling"
-  vpc_zone_identifier  = split(",", var.vpc_subnets)
+  vpc_zone_identifier  = var.vpc_subnets
   launch_configuration = aws_launch_configuration.cluster.name
-  termination_policies = split(",", var.ecs_termination_policies)
+  termination_policies = var.ecs_termination_policies
   min_size             = var.ecs_minsize
   max_size             = var.ecs_maxsize
   desired_capacity     = var.ecs_desired_capacity
