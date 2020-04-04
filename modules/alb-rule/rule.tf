@@ -15,17 +15,17 @@ variable "CONDITION_VALUES" {
 }
 
 resource "aws_lb_listener_rule" "alb_rule" {
-  listener_arn = var.LISTENER_ARN
-  priority     = var.PRIORITY
+  listener_arn = var.listener_arn
+  priority     = var.priority
 
   action {
     type             = "forward"
-    target_group_arn = var.TARGET_GROUP_ARN
+    target_group_arn = var.target_group_arn
   }
 
   condition {
-    field  = var.CONDITION_FIELD
-    values = var.CONDITION_VALUES
+    field  = var.condition_field
+    values = var.condition_values
   }
 }
 

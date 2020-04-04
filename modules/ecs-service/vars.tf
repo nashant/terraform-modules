@@ -1,56 +1,56 @@
-variable "VPC_ID" {
+variable "vpc_id" {
 }
 
-variable "AWS_REGION" {
+variable "aws_region" {
 }
 
-variable "APPLICATION_NAME" {
+variable "application_name" {
 }
 
-variable "APPLICATION_PORT" {
+variable "application_port" {
 }
 
-variable "APPLICATION_VERSION" {
+variable "application_version" {
 }
 
-variable "CLUSTER_ARN" {
+variable "cluster_arn" {
 }
 
-variable "SERVICE_ROLE_ARN" {
+variable "service_role_arn" {
 }
 
-variable "DESIRED_COUNT" {
+variable "desired_count" {
 }
 
-variable "DEPLOYMENT_MINIMUM_HEALTHY_PERCENT" {
+variable "deployment_minimum_healthy_percent" {
   default = 100
 }
 
-variable "DEPLOYMENT_MAXIMUM_PERCENT" {
+variable "deployment_maximum_percent" {
   default = 200
 }
 
-variable "DEREGISTRATION_DELAY" {
+variable "deregistration_delay" {
   default = 30
 }
 
-variable "HEALTHCHECK_MATCHER" {
+variable "healthcheck_matcher" {
   default = "200"
 }
 
-variable "CPU_RESERVATION" {
+variable "cpu_reservation" {
 }
 
-variable "MEMORY_RESERVATION" {
+variable "memory_reservation" {
 }
 
-variable "LOG_GROUP" {
+variable "log_group" {
 }
 
-variable "TASK_ROLE_ARN" {
+variable "task_role_arn" {
   default = ""
 }
 
-variable "ALB_ARN" {
+variable "alb_arn" {
 }
 

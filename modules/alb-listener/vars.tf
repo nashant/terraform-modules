@@ -1,16 +1,16 @@
-variable "ALB_ARN" {
+variable "alb_arn" {
 }
 
-variable "ALB_PORT" {
+variable "alb_port" {
 }
 
-variable "DOMAIN" {
+variable "domain" {
 }
 
-variable "TARGET_GROUP_ARN" {
+variable "target_group_arn" {
 }
 
-variable "ALB_PROTOCOL" {
-  default = "HTTPS"
+variable "alb_protocol" {
+  default = "https"
 }
 
