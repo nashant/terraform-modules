@@ -1,22 +1,22 @@
-variable "ALB_NAME" {
+variable "alb_name" {
 }
 
-variable "INTERNAL" {
+variable "internal" {
 }
 
-variable "VPC_ID" {
+variable "vpc_id" {
 }
 
-variable "VPC_SUBNETS" {
+variable "vpc_subnets" {
 }
 
-variable "DOMAIN" {
+variable "domain" {
 }
 
-variable "DEFAULT_TARGET_ARN" {
+variable "default_target_arn" {
 }
 
-variable "ECS_SG" {
+variable "ecs_sg" {
   default = ""
 }
 

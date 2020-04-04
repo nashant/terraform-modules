@@ -1,41 +1,41 @@
-variable "AWS_REGION" {
+variable "aws_region" {
 }
 
-variable "APPLICATION_NAME" {
+variable "application_name" {
 }
 
-variable "APPLICATION_VERSION" {
+variable "application_version" {
 }
 
-variable "CLUSTER_ARN" {
+variable "cluster_arn" {
 }
 
-variable "EVENTS_ROLE_ARN" {
+variable "events_role_arn" {
 }
 
-variable "DESIRED_COUNT" {
+variable "desired_count" {
 }
 
-variable "TASK_DEF_TEMPLATE" {
+variable "task_def_template" {
 }
 
-variable "ECR_PREFIX" {
+variable "ecr_prefix" {
   default = ""
 }
 
-variable "SCHEDULE" {
+variable "schedule" {
 }
 
-variable "CPU_RESERVATION" {
+variable "cpu_reservation" {
 }
 
-variable "MEMORY_RESERVATION" {
+variable "memory_reservation" {
 }
 
-variable "LOG_GROUP" {
+variable "log_group" {
 }
 
-variable "TASK_ROLE_ARN" {
+variable "task_role_arn" {
   default = ""
 }
 

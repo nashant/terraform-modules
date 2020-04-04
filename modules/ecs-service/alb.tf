@@ -2,22 +2,22 @@
 # target
 #
 resource "aws_alb_target_group" "ecs-service" {
-  name = "${var.APPLICATION_NAME}-${substr(
+  name = "${var.application_name}-${substr(
     md5(
       format(
         "%s%s%s",
-        var.APPLICATION_PORT,
-        var.DEREGISTRATION_DELAY,
-        var.HEALTHCHECK_MATCHER,
+        var.application_port,
+        var.deregistration_delay,
+        var.healthcheck_matcher,
       ),
     ),
     0,
     12,
   )}"
-  port                 = var.APPLICATION_PORT
+  port                 = var.application_port
   protocol             = "HTTP"
-  vpc_id               = var.VPC_ID
-  deregistration_delay = var.DEREGISTRATION_DELAY
+  vpc_id               = var.vpc_id
+  deregistration_delay = var.deregistration_delay
 
   health_check {
     healthy_threshold   = 3
@@ -25,7 +25,7 @@ resource "aws_alb_target_group" "ecs-service" {
     protocol            = "HTTP"
     path                = "/"
     interval            = 60
-    matcher             = var.HEALTHCHECK_MATCHER
+    matcher             = var.healthcheck_matcher
   }
 }
 

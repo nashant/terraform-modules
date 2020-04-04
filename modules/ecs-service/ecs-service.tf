@@ -3,7 +3,7 @@
 #
 
 resource "aws_ecr_repository" "ecs-service" {
-  name = var.APPLICATION_NAME
+  name = var.application_name
 }
 
 #
@@ -22,14 +22,14 @@ data "template_file" "ecs-service" {
   template = file("${path.module}/ecs-service.json")
 
   vars = {
-    APPLICATION_NAME    = var.APPLICATION_NAME
-    APPLICATION_PORT    = var.APPLICATION_PORT
-    APPLICATION_VERSION = var.APPLICATION_VERSION
+    APPLICATION_NAME    = var.application_name
+    APPLICATION_PORT    = var.application_port
+    APPLICATION_VERSION = var.application_version
     ECR_URL             = aws_ecr_repository.ecs-service.repository_url
-    AWS_REGION          = var.AWS_REGION
-    CPU_RESERVATION     = var.CPU_RESERVATION
-    MEMORY_RESERVATION  = var.MEMORY_RESERVATION
-    LOG_GROUP           = var.LOG_GROUP
+    AWS_REGION          = var.aws_region
+    CPU_RESERVATION     = var.cpu_reservation
+    MEMORY_RESERVATION  = var.memory_reservation
+    LOG_GROUP           = var.log_group
   }
 }
 
@@ -38,9 +38,9 @@ data "template_file" "ecs-service" {
 #
 
 resource "aws_ecs_task_definition" "ecs-service-taskdef" {
-  family                = var.APPLICATION_NAME
+  family                = var.application_name
   container_definitions = data.template_file.ecs-service.rendered
-  task_role_arn         = var.TASK_ROLE_ARN
+  task_role_arn         = var.task_role_arn
 }
 
 #
@@ -48,21 +48,21 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 #
 
 resource "aws_ecs_service" "ecs-service" {
-  name    = var.APPLICATION_NAME
-  cluster = var.CLUSTER_ARN
+  name    = var.application_name
+  cluster = var.cluster_arn
   task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
     aws_ecs_task_definition.ecs-service-taskdef.revision,
     data.aws_ecs_task_definition.ecs-service.revision,
   )}"
-  iam_role                           = var.SERVICE_ROLE_ARN
-  desired_count                      = var.DESIRED_COUNT
-  deployment_minimum_healthy_percent = var.DEPLOYMENT_MINIMUM_HEALTHY_PERCENT
-  deployment_maximum_percent         = var.DEPLOYMENT_MAXIMUM_PERCENT
+  iam_role                           = var.service_role_arn
+  desired_count                      = var.desired_count
+  deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
+  deployment_maximum_percent         = var.deployment_maximum_percent
 
   load_balancer {
     target_group_arn = aws_alb_target_group.ecs-service.id
-    container_name   = var.APPLICATION_NAME
-    container_port   = var.APPLICATION_PORT
+    container_name   = var.application_name
+    container_port   = var.application_port
   }
 
   depends_on = [null_resource.alb_exists]
@@ -70,7 +70,7 @@ resource "aws_ecs_service" "ecs-service" {
 
 resource "null_resource" "alb_exists" {
   triggers = {
-    alb_name = var.ALB_ARN
+    alb_name = var.alb_arn
   }
 }
 

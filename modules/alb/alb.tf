@@ -3,17 +3,17 @@
 #
 # alb main definition
 resource "aws_alb" "alb" {
-  name            = var.ALB_NAME
-  internal        = var.INTERNAL
+  name            = var.alb_name
+  internal        = var.internal
   security_groups = [aws_security_group.alb.id]
-  subnets         = split(",", var.VPC_SUBNETS)
+  subnets         = split(",", var.vpc_subnets)
 
   enable_deletion_protection = false
 }
 
 # certificate
 data "aws_acm_certificate" "certificate" {
-  domain   = var.DOMAIN
+  domain   = var.domain
   statuses = ["ISSUED", "PENDING_VALIDATION"]
 }
 
@@ -26,7 +26,7 @@ resource "aws_alb_listener" "alb-https" {
   certificate_arn   = data.aws_acm_certificate.certificate.arn
 
   default_action {
-    target_group_arn = var.DEFAULT_TARGET_ARN
+    target_group_arn = var.default_target_arn
     type             = "forward"
   }
 }
@@ -38,7 +38,7 @@ resource "aws_alb_listener" "alb-http" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = var.DEFAULT_TARGET_ARN
+    target_group_arn = var.default_target_arn
     type             = "forward"
   }
 }
