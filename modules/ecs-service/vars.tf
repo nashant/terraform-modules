@@ -10,11 +10,15 @@ variable "application_name" {
 variable "application_containers" {
 }
 
-variable "cluster_arn" {
+variable "mount_rootdir" {
+  default = "/opt/data"
 }
 
 variable "efs_id" {
   default = ""
+}
+
+variable "cluster_arn" {
 }
 
 variable "service_role_arn" {
