@@ -1,4 +1,7 @@
 output "target_group_arns" {
-  value = aws_alb_target_group.ecs-service.*.id
+  value = [
+    for target_group in aws_alb_target_group.ecs-service.* :
+    target_group.arn
+  ]
 }
 
