@@ -10,12 +10,6 @@ variable "application_name" {
 variable "application_containers" {
 }
 
-variable "application_port" {
-}
-
-variable "application_version" {
-}
-
 variable "cluster_arn" {
 }
 

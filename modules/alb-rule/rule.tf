@@ -1,16 +1,16 @@
-variable "LISTENER_ARN" {
+variable "listener_arn" {
 }
 
-variable "PRIORITY" {
+variable "priority" {
 }
 
-variable "TARGET_GROUP_ARN" {
+variable "target_group_arn" {
 }
 
-variable "CONDITION_FIELD" {
+variable "condition_field" {
 }
 
-variable "CONDITION_VALUES" {
+variable "condition_values" {
   type = list(string)
 }
 
