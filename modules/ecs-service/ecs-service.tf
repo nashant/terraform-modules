@@ -83,7 +83,6 @@ resource "aws_ecs_service" "ecs-service" {
   name                               = var.application_name
   cluster                            = var.cluster_arn
   task_definition                    = aws_ecs_task_definition.ecs-task.arn
-  iam_role                           = var.service_role_arn
   desired_count                      = var.desired_count
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
   deployment_maximum_percent         = var.deployment_maximum_percent
