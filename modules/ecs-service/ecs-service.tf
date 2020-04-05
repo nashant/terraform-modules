@@ -89,9 +89,17 @@ resource "aws_ecs_service" "ecs-service" {
   deployment_maximum_percent         = var.deployment_maximum_percent
 
   dynamic "load_balancer" {
-    for_each = local.lb_ports
+    for_each = flatten([
+      for lb_port in local.lb_ports :
+      merge(
+        lb_port,
+        {
+          target_group_arn = aws_alb_target_group.ecs-service[format("%s-%s", lb_port.container, lb_port.port)].arn
+        }
+      )
+    ])
     content {
-      target_group_arn = aws_alb_target_group.ecs-service.id
+      target_group_arn = load_balancer.value["target_group_arn"]
       container_name   = load_balancer.value["container"]
       container_port   = load_balancer.value["port"]
     }
