@@ -74,7 +74,7 @@ resource "aws_ecs_task_definition" "ecs-task" {
     }
   }
 
-  depends_on = var.efs == null ? [] : var.efs
+  depends_on = [null_resource.efs_provisioned]
 }
 
 #
@@ -115,3 +115,10 @@ resource "null_resource" "alb_exists" {
   }
 }
 
+resource "null_resource" "efs_provisioned" {
+  count = var.efs == null ? 0 : 1
+
+  triggers = {
+    efs = var.efs.id
+  }
+}
