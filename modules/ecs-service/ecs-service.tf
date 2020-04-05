@@ -4,14 +4,14 @@ locals {
       merge(
         {
           essential = true
-          logConfiguration = {
-            logDriver = "awslogs"
-            options = {
-              awslogs-group         = var.log_group
-              awslogs-region        = var.aws_region
-              awslogs-stream-prefix = container.name
-            }
-          }
+          #          logConfiguration = {
+          #            logDriver = "awslogs"
+          #            options = {
+          #              awslogs-group         = var.log_group
+          #              awslogs-region        = var.aws_region
+          #              awslogs-stream-prefix = container.name
+          #            }
+          #          }
         },
         container
       )
