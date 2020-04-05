@@ -16,6 +16,10 @@ variable "cluster_name" {
 variable "instance_type" {
 }
 
+variable "spot_price" {
+  default = null
+}
+
 variable "ssh_key_name" {
 }
 
