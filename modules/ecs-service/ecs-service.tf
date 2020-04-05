@@ -58,18 +58,18 @@ resource "aws_ecs_task_definition" "ecs-task" {
   dynamic "volume" {
     for_each = var.efs_id == "" ? local.volumes : []
     content {
-      name      = volume.value["name"]
-      host_path = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["name"])
+      name      = volume.value["sourceVolume"]
+      host_path = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["sourceVolume"])
     }
   }
 
   dynamic "volume" {
     for_each = var.efs_id != "" ? local.volumes : []
     content {
-      name = volume.value["name"]
+      name = volume.value["sourceVolume"]
       efs_volume_configuration {
         file_system_id = var.efs_id
-        root_directory = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["name"])
+        root_directory = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["sourceVolume"])
       }
     }
   }
