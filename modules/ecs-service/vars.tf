@@ -14,8 +14,8 @@ variable "mount_rootdir" {
   default = "/opt/data"
 }
 
-variable "efs_id" {
-  default = ""
+variable "efs" {
+  default = null
 }
 
 variable "cluster_arn" {
