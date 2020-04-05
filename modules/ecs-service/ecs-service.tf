@@ -1,3 +1,43 @@
+locals {
+  containers = flatten([
+    for container in var.application_containers : [
+      merge(
+        {
+          essential = true
+          logConfiguration = {
+            logDriver = "awslogs"
+            options = {
+              awslogs-group         = var.log_group
+              awslogs-region        = var.aws_region
+              awslogs-stream-prefix = container.name
+            }
+          }
+        },
+        container
+      )
+    ]
+  ])
+
+  volumes = flatten([
+    for container in local.containers : [
+      for mountPoint in container.mountPoints : [
+        merge({ container : container.name }, mountPoint)
+      ]
+    ]
+  ])
+
+  lb_ports = flatten([
+    for container in local.containers : [
+      for portMapping in container.portMappings : [
+        {
+          container = container.name
+          port      = portMapping.containerPort
+        }
+      ]
+    ]
+  ])
+}
+
 #
 # ECR 
 #
@@ -7,40 +47,32 @@ resource "aws_ecr_repository" "ecs-service" {
 }
 
 #
-# get latest active revision
-#
-data "aws_ecs_task_definition" "ecs-service" {
-  task_definition = aws_ecs_task_definition.ecs-service-taskdef.family
-  depends_on      = [aws_ecs_task_definition.ecs-service-taskdef]
-}
-
-#
-# task definition template
-#
-
-data "template_file" "ecs-service" {
-  template = file("${path.module}/ecs-service.json")
-
-  vars = {
-    APPLICATION_NAME    = var.application_name
-    APPLICATION_PORT    = var.application_port
-    APPLICATION_VERSION = var.application_version
-    ECR_URL             = aws_ecr_repository.ecs-service.repository_url
-    AWS_REGION          = var.aws_region
-    CPU_RESERVATION     = var.cpu_reservation
-    MEMORY_RESERVATION  = var.memory_reservation
-    LOG_GROUP           = var.log_group
-  }
-}
-
-#
 # task definition
 #
 
-resource "aws_ecs_task_definition" "ecs-service-taskdef" {
+resource "aws_ecs_task_definition" "ecs-task" {
   family                = var.application_name
-  container_definitions = data.template_file.ecs-service.rendered
+  container_definitions = jsonencode(local.containers)
   task_role_arn         = var.task_role_arn
+
+  dynamic "volume" {
+    for_each = var.efs_id == "" ? local.volumes : []
+    content {
+      name      = volume.value["name"]
+      host_path = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["name"])
+    }
+  }
+
+  dynamic "volume" {
+    for_each = var.efs_id != "" ? local.volumes : []
+    content {
+      name = volume.value["name"]
+      efs_volume_configuration {
+        file_system_id = var.efs_id
+        root_directory = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["name"])
+      }
+    }
+  }
 }
 
 #
@@ -48,21 +80,21 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 #
 
 resource "aws_ecs_service" "ecs-service" {
-  name    = var.application_name
-  cluster = var.cluster_arn
-  task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
-    aws_ecs_task_definition.ecs-service-taskdef.revision,
-    data.aws_ecs_task_definition.ecs-service.revision,
-  )}"
+  name                               = var.application_name
+  cluster                            = var.cluster_arn
+  task_definition                    = aws_ecs_task_definition.ecs-task.arn
   iam_role                           = var.service_role_arn
   desired_count                      = var.desired_count
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
   deployment_maximum_percent         = var.deployment_maximum_percent
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.ecs-service.id
-    container_name   = var.application_name
-    container_port   = var.application_port
+  dynamic "load_balancer" {
+    for_each = local.lb_ports
+    content {
+      target_group_arn = aws_alb_target_group.ecs-service.id
+      container_name   = load_balancer.value["container"]
+      container_port   = load_balancer.value["port"]
+    }
   }
 
   depends_on = [null_resource.alb_exists]

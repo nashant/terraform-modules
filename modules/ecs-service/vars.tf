@@ -7,6 +7,9 @@ variable "aws_region" {
 variable "application_name" {
 }
 
+variable "application_containers" {
+}
+
 variable "application_port" {
 }
 
@@ -14,6 +17,10 @@ variable "application_version" {
 }
 
 variable "cluster_arn" {
+}
+
+variable "efs_id" {
+  default = ""
 }
 
 variable "service_role_arn" {
