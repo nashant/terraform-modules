@@ -56,25 +56,12 @@ resource "aws_ecs_task_definition" "ecs-task" {
   task_role_arn         = var.task_role_arn
 
   dynamic "volume" {
-    for_each = var.efs == null ? local.volumes : []
+    for_each = local.volumes
     content {
       name      = volume.value["sourceVolume"]
       host_path = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["sourceVolume"])
     }
   }
-
-  dynamic "volume" {
-    for_each = var.efs != null ? local.volumes : []
-    content {
-      name = volume.value["sourceVolume"]
-      efs_volume_configuration {
-        file_system_id = var.efs.id
-        root_directory = format("%s/%s/%s", var.mount_rootdir, volume.value["container"], volume.value["sourceVolume"])
-      }
-    }
-  }
-
-  depends_on = [null_resource.efs_provisioned]
 }
 
 #
@@ -112,13 +99,5 @@ resource "aws_ecs_service" "ecs-service" {
 resource "null_resource" "alb_exists" {
   triggers = {
     alb_name = var.alb_arn
-  }
-}
-
-resource "null_resource" "efs_provisioned" {
-  count = var.efs == null ? 0 : 1
-
-  triggers = {
-    efs = var.efs.id
   }
 }

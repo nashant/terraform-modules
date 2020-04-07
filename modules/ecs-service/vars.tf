@@ -14,10 +14,6 @@ variable "mount_rootdir" {
   default = "/opt/data"
 }
 
-variable "efs" {
-  default = null
-}
-
 variable "cluster_arn" {
 }
 
@@ -59,3 +55,5 @@ variable "task_role_arn" {
 variable "alb_arn" {
 }
 
+variable "cluster_subnets" {
+}
